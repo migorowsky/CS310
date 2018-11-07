@@ -66,7 +66,7 @@ public class PrintImpl {
                         mgr.getFirstName());
 
                 for (StockTrade trade : this.stockTrades) {
-                    if (trade.getLicenseNumber().equals(licenseNumber)) {
+                    if (trade != null && trade.getLicenseNumber().equals(licenseNumber)) {
                         // write the details of the trade
                         writer.printf("       %-10s   %-12s   %-10d   %-3s\n\n", 
                                 trade.getSymbol(),

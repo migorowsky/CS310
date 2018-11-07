@@ -91,7 +91,7 @@ public class StockTradeLogImpl {
         // licenseNumber
         boolean found = false;
         int elementToRemoveIndex = 0;
-        while (elementToRemoveIndex < this.stockTradeLog.length) {
+        while (elementToRemoveIndex < this.numStockTrades) {
             if (this.stockTradeLog[elementToRemoveIndex].getLicenseNumber()
                     .equals(licenseNumber)) {
                 removeItemAtIndex(elementToRemoveIndex);
@@ -160,7 +160,7 @@ public class StockTradeLogImpl {
         // with the stockSymbol is located
         int index = 0;
         boolean found = false;
-        while (!found && index < this.stockTradeLog.length) {
+        while (!found && index < this.numStockTrades) {
             if (this.stockTradeLog[index].getSymbol()
                     .compareTo(stockSymbol) == 0) {
                 found = true;
@@ -182,7 +182,7 @@ public class StockTradeLogImpl {
     public double totalStockTradeValue() {
         double totalValue = 0;
         
-        for (int i = 0; i < this.stockTradeLog.length; i++) {
+        for (int i = 0; i < this.numStockTrades; i++) {
             totalValue += getStockTradeValue(this.stockTradeLog[i]);
         }
         
@@ -197,7 +197,7 @@ public class StockTradeLogImpl {
     public double totalStockTradeValue(String licenseNumber) {
         double totalValue = 0;
         
-        for (int i = 0; i < this.stockTradeLog.length; i++) {
+        for (int i = 0; i < this.numStockTrades; i++) {
             if (this.stockTradeLog[i].getLicenseNumber()
                     .equals(licenseNumber)) {
                 totalValue =+ getStockTradeValue(this.stockTradeLog[i]);
