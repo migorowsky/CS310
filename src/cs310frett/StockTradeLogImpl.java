@@ -14,15 +14,14 @@ import java.util.Arrays;
 public class StockTradeLogImpl {
     private static int MAX_TRADES = 1000;
     
-    private StockTrade[] stockTradeLog;
-    private int stockTradeLogSize;
+    private StockTrade[] stockTradeLog = new StockTrade[MAX_TRADES];
+    private int numStockTrades;
 
     /**
      * Default parameterless constructor
      */
     public StockTradeLogImpl() {
-        this.stockTradeLog = new StockTrade[0];
-        this.stockTradeLogSize = this.stockTradeLog.length;
+        this.numStockTrades = 0;
     }
     
     /**
@@ -38,7 +37,7 @@ public class StockTradeLogImpl {
      * @return 
      */
     public int getNumStockTrades() {
-        return this.stockTradeLogSize;
+        return this.numStockTrades;
     }
     
     /**
@@ -65,26 +64,12 @@ public class StockTradeLogImpl {
      * @return 
      */
     public boolean addStockTrade(StockTrade stockTrade) {
-        boolean success = true;
+        boolean success = false;
         
-        if (this.stockTradeLog.length >= MAX_TRADES) {
-            success = false;
-        } else {
-            try {
-                int index = this.stockTradeLogSize;
-                
-                // Increase the array size by 1 
-                this.stockTradeLog = Arrays.copyOf(this.stockTradeLog, 
-                        this.stockTradeLog.length + 1);
-
-                // Add the new stockTrade to the end of the array
-                this.stockTradeLog[index] = stockTrade;
-
-                // update the stockTradeLogSize to reflect the new array size
-                this.stockTradeLogSize = this.stockTradeLog.length;
-            } catch (Exception e) {
-                success = false;
-            }
+        if (this.stockTradeLog.length < MAX_TRADES) {
+            this.stockTradeLog[numStockTrades] = stockTrade;
+            numStockTrades++;
+            success = true;
         }
         
         return success;
@@ -106,7 +91,7 @@ public class StockTradeLogImpl {
         // licenseNumber
         boolean found = false;
         int elementToRemoveIndex = 0;
-        while (elementToRemoveIndex < this.stockTradeLog.length) {
+        while (elementToRemoveIndex < this.numStockTrades) {
             if (this.stockTradeLog[elementToRemoveIndex].getLicenseNumber()
                     .equals(licenseNumber)) {
                 removeItemAtIndex(elementToRemoveIndex);
@@ -155,26 +140,10 @@ public class StockTradeLogImpl {
     private boolean removeItemAtIndex(int elementToRemoveIndex) {
         boolean itemRemoved = false;
         
-        try {
-            // remove the StockTrade from the log:
-            
-            // copy the contents in the last array position to the position 
-            // where the item to remove is located
-            int indexOfLastElement = this.stockTradeLog.length - 1;
-            this.stockTradeLog[elementToRemoveIndex] = 
-                    this.stockTradeLog[indexOfLastElement];
-            
-            // shrink the array by 1, removing the last element in the array
-            this.stockTradeLog = Arrays.copyOf(this.stockTradeLog, 
-                        this.stockTradeLog.length -1);
-
-            // update the stockTradeLogSize to reflect the new array size
-            this.stockTradeLogSize = this.stockTradeLog.length;
-            
-            itemRemoved = true;
-        } catch (Exception e) {
-            itemRemoved = false;
-        }
+        this.stockTradeLog[elementToRemoveIndex] = 
+                this.stockTradeLog[numStockTrades - 1];
+        numStockTrades--;
+        itemRemoved = true;
         
         return itemRemoved;
     }
@@ -191,7 +160,7 @@ public class StockTradeLogImpl {
         // with the stockSymbol is located
         int index = 0;
         boolean found = false;
-        while (!found && index < this.stockTradeLog.length) {
+        while (!found && index < this.numStockTrades) {
             if (this.stockTradeLog[index].getSymbol()
                     .compareTo(stockSymbol) == 0) {
                 found = true;
@@ -213,7 +182,7 @@ public class StockTradeLogImpl {
     public double totalStockTradeValue() {
         double totalValue = 0;
         
-        for (int i = 0; i < this.stockTradeLog.length; i++) {
+        for (int i = 0; i < this.numStockTrades; i++) {
             totalValue += getStockTradeValue(this.stockTradeLog[i]);
         }
         
@@ -228,7 +197,7 @@ public class StockTradeLogImpl {
     public double totalStockTradeValue(String licenseNumber) {
         double totalValue = 0;
         
-        for (int i = 0; i < this.stockTradeLog.length; i++) {
+        for (int i = 0; i < this.numStockTrades; i++) {
             if (this.stockTradeLog[i].getLicenseNumber()
                     .equals(licenseNumber)) {
                 totalValue =+ getStockTradeValue(this.stockTradeLog[i]);

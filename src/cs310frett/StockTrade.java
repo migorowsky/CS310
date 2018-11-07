@@ -60,8 +60,8 @@ public class StockTrade {
         this.setLicenseNumber(attributes[5]);
         
         // protect against lines in the file with the last field missing
-        if (attributes.length == 7 && attributes[6].equalsIgnoreCase(TAXABLE)) {
-            this.setTaxable(true);
+        if (attributes.length == 7) {
+            this.setTaxable(attributes[6]);
         } else {
             // this defaults to false.  Putting this here to make it explicit.
             this.setTaxable(false); 
@@ -173,6 +173,19 @@ public class StockTrade {
      */
     public void setTaxable(boolean taxable) {
         this.taxable = taxable;
+    }
+    
+    /**
+     * Overload of setTaxable that accepts a string and sets the boolean 
+     * value accordingly.
+     * @param taxable 
+     */
+    public void setTaxable(String taxable) {
+        if (taxable.equalsIgnoreCase(TAXABLE)) {
+            this.taxable = true;
+        } else {
+            this.taxable = false;
+        }
     }
     
     /**
