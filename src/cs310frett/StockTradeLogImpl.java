@@ -14,15 +14,14 @@ import java.util.Arrays;
 public class StockTradeLogImpl {
     private static int MAX_TRADES = 1000;
     
-    private StockTrade[] stockTradeLog;
+    private StockTrade[] stockTradeLog = new StockTrade[MAX_TRADES];
     private int numStockTrades;
 
     /**
      * Default parameterless constructor
      */
     public StockTradeLogImpl() {
-        this.stockTradeLog = new StockTrade[0];
-        this.numStockTrades = this.stockTradeLog.length;
+        this.numStockTrades = 0;
     }
     
     /**
@@ -65,26 +64,12 @@ public class StockTradeLogImpl {
      * @return 
      */
     public boolean addStockTrade(StockTrade stockTrade) {
-        boolean success = true;
+        boolean success = false;
         
-        if (this.stockTradeLog.length >= MAX_TRADES) {
-            success = false;
-        } else {
-            try {
-                int index = this.numStockTrades;
-                
-                // Increase the array size by 1 
-                this.stockTradeLog = Arrays.copyOf(this.stockTradeLog, 
-                        this.stockTradeLog.length + 1);
-
-                // Add the new stockTrade to the end of the array
-                this.stockTradeLog[index] = stockTrade;
-
-                // update the numStockTrades to reflect the new array size
-                this.numStockTrades = this.stockTradeLog.length;
-            } catch (Exception e) {
-                success = false;
-            }
+        if (this.stockTradeLog.length < MAX_TRADES) {
+            this.stockTradeLog[numStockTrades] = stockTrade;
+            numStockTrades++;
+            success = true;
         }
         
         return success;
@@ -155,26 +140,10 @@ public class StockTradeLogImpl {
     private boolean removeItemAtIndex(int elementToRemoveIndex) {
         boolean itemRemoved = false;
         
-        try {
-            // remove the StockTrade from the log:
-            
-            // copy the contents in the last array position to the position 
-            // where the item to remove is located
-            int indexOfLastElement = this.stockTradeLog.length - 1;
-            this.stockTradeLog[elementToRemoveIndex] = 
-                    this.stockTradeLog[indexOfLastElement];
-            
-            // shrink the array by 1, removing the last element in the array
-            this.stockTradeLog = Arrays.copyOf(this.stockTradeLog, 
-                        this.stockTradeLog.length -1);
-
-            // update the numStockTrades to reflect the new array size
-            this.numStockTrades = this.stockTradeLog.length;
-            
-            itemRemoved = true;
-        } catch (Exception e) {
-            itemRemoved = false;
-        }
+        this.stockTradeLog[elementToRemoveIndex] = 
+                this.stockTradeLog[numStockTrades - 1];
+        numStockTrades--;
+        itemRemoved = true;
         
         return itemRemoved;
     }
