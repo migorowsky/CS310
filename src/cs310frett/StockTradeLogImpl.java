@@ -15,14 +15,14 @@ public class StockTradeLogImpl {
     private static int MAX_TRADES = 1000;
     
     private StockTrade[] stockTradeLog;
-    private int stockTradeLogSize;
+    private int numStockTrades;
 
     /**
      * Default parameterless constructor
      */
     public StockTradeLogImpl() {
         this.stockTradeLog = new StockTrade[0];
-        this.stockTradeLogSize = this.stockTradeLog.length;
+        this.numStockTrades = this.stockTradeLog.length;
     }
     
     /**
@@ -38,7 +38,7 @@ public class StockTradeLogImpl {
      * @return 
      */
     public int getNumStockTrades() {
-        return this.stockTradeLogSize;
+        return this.numStockTrades;
     }
     
     /**
@@ -71,7 +71,7 @@ public class StockTradeLogImpl {
             success = false;
         } else {
             try {
-                int index = this.stockTradeLogSize;
+                int index = this.numStockTrades;
                 
                 // Increase the array size by 1 
                 this.stockTradeLog = Arrays.copyOf(this.stockTradeLog, 
@@ -80,8 +80,8 @@ public class StockTradeLogImpl {
                 // Add the new stockTrade to the end of the array
                 this.stockTradeLog[index] = stockTrade;
 
-                // update the stockTradeLogSize to reflect the new array size
-                this.stockTradeLogSize = this.stockTradeLog.length;
+                // update the numStockTrades to reflect the new array size
+                this.numStockTrades = this.stockTradeLog.length;
             } catch (Exception e) {
                 success = false;
             }
@@ -168,8 +168,8 @@ public class StockTradeLogImpl {
             this.stockTradeLog = Arrays.copyOf(this.stockTradeLog, 
                         this.stockTradeLog.length -1);
 
-            // update the stockTradeLogSize to reflect the new array size
-            this.stockTradeLogSize = this.stockTradeLog.length;
+            // update the numStockTrades to reflect the new array size
+            this.numStockTrades = this.stockTradeLog.length;
             
             itemRemoved = true;
         } catch (Exception e) {
