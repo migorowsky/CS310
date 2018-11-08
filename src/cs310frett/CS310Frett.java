@@ -14,7 +14,11 @@ import java.util.Scanner;
  * @author katefrett
  */
 public class CS310Frett {
-    private static final String INPUT_FILENAME = "./input/assn2input1.txt";
+    private static final String INPUT_FILENAME = "./input/assn3input1.txt";
+    private static final String INITIAL_REPORT_FILENAME = 
+            "./output/assn3initialReport.txt";
+    private static final String CLEAN_REPORT_FILENAME = 
+            "./output/assn3cleanReport.txt";
     
     private static final String BROKER_LINE_IDENTIFIER = "BROKER";
     private static final String ADD_BROKER = "ADD";
@@ -36,7 +40,26 @@ public class CS310Frett {
      */
     public static void main(String[] args) {
         processInputFile();
-        createReport();
+        printAuditTrail();
+        createReport("initial");
+        cleanupLogs();
+        createReport("clean");
+    }
+    
+    /**
+     * Prints the contents of the fundManager log and stockTrade log to stdout
+     */
+    private static void printAuditTrail() {
+        fundManagerLogImpl.traverseDisplay();
+        stockTradeLogImpl.traverseDisplay();
+    }
+    
+    /**
+     * Invokes the cleanUp methods on the fundManager log and stockTrade log
+     */
+    private static void cleanupLogs() {
+        fundManagerLogImpl.cleanUp();
+        stockTradeLogImpl.cleanUp();
     }
     
     /**
@@ -292,9 +315,22 @@ public class CS310Frett {
         }
     }
     
-    private static void createReport() {
+    /**
+     * Creates the report from the fundManagerLogImpl and StockTradeLogImpl in 
+     * a specified location (file)
+     * @param reportType 
+     */
+    private static void createReport(String reportType) {
+        System.out.println("\nCreating " + reportType + " report...\n");
+        
         PrintImpl printImpl = new PrintImpl();
-        printImpl.generateReport(fundManagerLogImpl, stockTradeLogImpl);
+        if (reportType.equals("initial")) {
+            printImpl.generateReport(fundManagerLogImpl, stockTradeLogImpl, 
+                    INITIAL_REPORT_FILENAME);
+        } else {
+            printImpl.generateReport(fundManagerLogImpl, stockTradeLogImpl, 
+                     CLEAN_REPORT_FILENAME);
+        }
     }
     
     /**

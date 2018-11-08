@@ -9,7 +9,8 @@ import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Iterator;
 
 
 /**
@@ -17,11 +18,10 @@ import java.util.ArrayList;
  * @author katefrett
  */
 public class PrintImpl {
-    private static final String OUTPUT_FILENAME = "./output/assn2report.txt";
     private static final DecimalFormat DF = new DecimalFormat("#.00");
     
-    private ArrayList<FundManager> fundManagers;
-    private StockTrade[] stockTrades;
+    private FundManagerNode fundManagerNode;
+    private LinkedList<StockTrade> stockTrades;
     private int stockTradeCount;
 
     /**
@@ -39,10 +39,11 @@ public class PrintImpl {
      * @param stockTradeLogImpl 
      */
     public void generateReport(FundManagerLogImpl fundManagerLogImpl, 
-            StockTradeLogImpl stockTradeLogImpl) {
+            StockTradeLogImpl stockTradeLogImpl,
+            String outputFilename) {
         
-        this.fundManagers = fundManagerLogImpl.getFundManagerLog();
-        this.stockTrades = stockTradeLogImpl.getStockTradeArray();
+        this.fundManagerNode = fundManagerLogImpl.getHead();
+        this.stockTrades = stockTradeLogImpl.getStockTradeLog();
         this.stockTradeCount = stockTradeLogImpl.getNumStockTrades();
         
         String licenseNumber;
@@ -52,12 +53,12 @@ public class PrintImpl {
         
         try {
             PrintWriter writer = new PrintWriter(
-                    new FileWriter(OUTPUT_FILENAME));
-
+                    new FileWriter(outputFilename));
             
             System.out.println("Creating report...");
             
-            for (FundManager mgr : this.fundManagers) {
+            while(this.fundManagerNode != null) {
+                FundManager mgr = this.fundManagerNode.getFundManager();
                 licenseNumber = mgr.getLicenseNumber();
                 // write fund manager details
                 writer.printf("%-10s %s, %s\n\n", 
@@ -65,7 +66,9 @@ public class PrintImpl {
                         mgr.getLastName(), 
                         mgr.getFirstName());
 
-                for (StockTrade trade : this.stockTrades) {
+                Iterator<StockTrade> iter = this.stockTrades.iterator();
+                while(iter.hasNext()) {
+                    StockTrade trade = iter.next();
                     if (trade != null && trade.getLicenseNumber().equals(licenseNumber)) {
                         // write the details of the trade
                         writer.printf("       %-10s   %-12s   %-10d   %-3s\n\n", 
@@ -91,6 +94,9 @@ public class PrintImpl {
                 // reset values before next iteration of loop
                 numberOfTradesForMgr = 0;
                 valueOfTradesForMgr = 0d;
+                
+                // move on to the next FundManager 
+                this.fundManagerNode = this.fundManagerNode.getNextNode();
             }
             
             // write summary details for report
@@ -102,10 +108,10 @@ public class PrintImpl {
             
             writer.close();
             
-            System.out.printf("Report is located in file: %s\n", OUTPUT_FILENAME);
+            System.out.printf("Report is located in file: %s\n", outputFilename);
         } catch (IOException ioe) {
             System.out.printf("Error writing to output file %s\n",
-                    OUTPUT_FILENAME);
+                    outputFilename);
         }
     }
 }
