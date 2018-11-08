@@ -1,0 +1,32 @@
+ABC12345   Smith, Andrea
+
+       DEF          2.34           24           YES
+
+       GHIJK        3.45           36           NO 
+
+     Number of StockTrade Listings for FundManager: 2
+     Total sales value of StockTrade Listings for FundManager ABC12345:  $ 180.36
+
+GHI34567   Helm, Sally
+
+       TENT         3.67           72           YES
+
+     Number of StockTrade Listings for FundManager: 1
+     Total sales value of StockTrade Listings for FundManager GHI34567:  $ 264.24
+
+BBB67890   Morgan, Bobby
+
+     Number of StockTrade Listings for FundManager: 0
+     Total sales value of StockTrade Listings for FundManager BBB67890:  $ .00
+
+CCCC6789   Twotone, Tommy
+
+       APES         2.50           10           YES
+
+       APPLES       3.00           5            YES
+
+     Number of StockTrade Listings for FundManager: 2
+     Total sales value of StockTrade Listings for FundManager CCCC6789:  $ 40.00
+
+Total Number of StockTrade Listings for ALL FundManagers = 5
+Total sales value of StockTrade Listings for ALL FundManagers = $ 484.60
