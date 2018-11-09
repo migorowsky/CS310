@@ -58,6 +58,7 @@ public class CS310Frett {
      * Invokes the cleanUp methods on the fundManager log and stockTrade log
      */
     private static void cleanupLogs() {
+        System.out.println("\nCleaning up fundManager and stockTrade logs...");
         fundManagerLogImpl.cleanUp(stockTradeLogImpl);
         stockTradeLogImpl.cleanUp();
     }

@@ -60,6 +60,9 @@ public class FundManagerLogImpl {
             FundManager fundManager = currentNode.getFundManager();
             if (!fundManager.licenseNumberIsValid()) {
                 String licenseNumber = fundManager.getLicenseNumber();
+                System.out.println("Invalid licenseNumber for fundManager " + 
+                        licenseNumber + " -- Deleting fundManager and all "
+                                + "their stockTrades from log");
                 removeFundManager(licenseNumber);
                 stockTradeLog.removeStockTradesByFundManager(licenseNumber);
             }

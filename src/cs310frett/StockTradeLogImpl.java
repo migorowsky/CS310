@@ -57,6 +57,8 @@ public class StockTradeLogImpl {
         while(iter.hasNext()) {
             StockTrade trade = iter.next();
             if (!trade.symbolIsValid()) {
+                System.out.println("Invalid symbol for stockTrade " + 
+                        trade.getSymbol() + " -- Deleting stockTrade from log");
                 iter.remove();
             }
         }
