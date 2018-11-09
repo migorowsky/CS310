@@ -5,7 +5,8 @@
  */
 package cs310frett;
 
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Iterator;
 
 /**
  *
@@ -14,7 +15,7 @@ import java.util.Arrays;
 public class StockTradeLogImpl {
     private static int MAX_TRADES = 1000;
     
-    private StockTrade[] stockTradeLog = new StockTrade[MAX_TRADES];
+    private LinkedList<StockTrade> stockTradeLog = new LinkedList<>();
     private int numStockTrades;
 
     /**
@@ -23,14 +24,45 @@ public class StockTradeLogImpl {
     public StockTradeLogImpl() {
         this.numStockTrades = 0;
     }
-    
-    /**
-     * return the array attribute
+
+    /** 
+     * Data accessor for the private member variable stockTradeLog
      * @return 
      */
-    public StockTrade[] getStockTradeArray() {
-        return this.stockTradeLog;
-    } 
+    public LinkedList<StockTrade> getStockTradeLog() {
+        return stockTradeLog;
+    }
+    
+    /**
+     * Displays each element in the collection, after displaying a header
+     */
+    public void traverseDisplay() {
+        System.out.println("StockTrade Log:");
+        
+        Iterator<StockTrade> iter = this.stockTradeLog.iterator();
+        
+        while(iter.hasNext()) {
+            StockTrade trade = iter.next();
+            System.out.println("     " + trade.toString());
+        }
+    }
+    
+    /**
+     * Removes any StockTrade items having invalid stockSymbols
+     * from the collection
+     */
+    public void cleanUp() {
+        Iterator<StockTrade> iter = this.stockTradeLog.iterator();
+        
+        while(iter.hasNext()) {
+            StockTrade trade = iter.next();
+            if (!trade.symbolIsValid()) {
+                System.out.println("Invalid symbol for stockTrade " + 
+                        trade.getSymbol() + " -- Deleting stockTrade from log");
+                iter.remove();
+            }
+        }
+    }
     
     /**
      * return the count attribute
@@ -48,9 +80,12 @@ public class StockTradeLogImpl {
     public int numberOfStockTrades(String licenseNumber) {
         int count = 0;
         
-        for (int i = 0; i < this.stockTradeLog.length; i++) {
-            if (this.stockTradeLog[i].getLicenseNumber()
-                    .compareTo(licenseNumber) == 0) {
+        Iterator<StockTrade> iter = this.stockTradeLog.iterator();
+        
+        while(iter.hasNext()) {
+            StockTrade trade = iter.next();
+            if (trade.getLicenseNumber()
+                    .equals(licenseNumber)) {
                 count++;
             }
         }
@@ -66,8 +101,8 @@ public class StockTradeLogImpl {
     public boolean addStockTrade(StockTrade stockTrade) {
         boolean success = false;
         
-        if (this.stockTradeLog.length < MAX_TRADES) {
-            this.stockTradeLog[numStockTrades] = stockTrade;
+        if (this.stockTradeLog.size() < MAX_TRADES) {
+            this.stockTradeLog.add(stockTrade);
             numStockTrades++;
             success = true;
         }
@@ -82,22 +117,16 @@ public class StockTradeLogImpl {
      * @return 
      */
     public boolean removeStockTradesByFundManager(String licenseNumber) {
-        // TODO - revisit this method - it's not doing what it's supposed to.  
-        // It should delete ALL stock trades for a licenseNumber, but it's only 
-        // deleting one trade for a licenseNumber
         boolean itemRemoved = false;
         
-        // Find elementToRemoveIndex of StockTrade with the appropriate 
-        // licenseNumber
-        boolean found = false;
-        int elementToRemoveIndex = 0;
-        while (elementToRemoveIndex < this.numStockTrades) {
-            if (this.stockTradeLog[elementToRemoveIndex].getLicenseNumber()
+        Iterator<StockTrade> iter = this.stockTradeLog.iterator();
+        while (iter.hasNext()) {
+            StockTrade trade = iter.next();
+            if (trade.getLicenseNumber()
                     .equals(licenseNumber)) {
-                removeItemAtIndex(elementToRemoveIndex);
-                elementToRemoveIndex = 0;
-            } else {
-                elementToRemoveIndex++;  
+                iter.remove();
+                this.numStockTrades--;
+                itemRemoved = true;
             }
         }
         
@@ -112,38 +141,16 @@ public class StockTradeLogImpl {
     public boolean removeStockTrade(String stockSymbol) {
         boolean itemRemoved = false;
         
-        // Find elementToRemoveIndex of StockTrade with the appropriate 
-        // stockSymbol
-        boolean found = false;
-        int elementToRemoveIndex = 0;
-        while (!found && elementToRemoveIndex < this.stockTradeLog.length) {
-            if (this.stockTradeLog[elementToRemoveIndex].getSymbol()
+        Iterator<StockTrade> iter = this.stockTradeLog.iterator();
+        while (!itemRemoved && iter.hasNext()) {
+            StockTrade trade = iter.next();
+            if (trade.getSymbol()
                     .equals(stockSymbol)) {
-                found = true;
-            } else {
-              elementToRemoveIndex++;  
+                iter.remove();
+                this.numStockTrades--;
+                itemRemoved = true;
             }
         }
-        
-        if (found) {
-            itemRemoved = removeItemAtIndex(elementToRemoveIndex);
-        }
-        
-        return itemRemoved;
-    }
-    
-    /**
-     * Removes a StockTrade at a specified index from the stockTradeLog
-     * @param elementToRemoveIndex
-     * @return 
-     */
-    private boolean removeItemAtIndex(int elementToRemoveIndex) {
-        boolean itemRemoved = false;
-        
-        this.stockTradeLog[elementToRemoveIndex] = 
-                this.stockTradeLog[numStockTrades - 1];
-        numStockTrades--;
-        itemRemoved = true;
         
         return itemRemoved;
     }
@@ -156,16 +163,14 @@ public class StockTradeLogImpl {
     public boolean isStockSymbolUnique(String stockSymbol) {
         boolean isUnique = true;
         
-        // find the appropriate elementToRemoveIndex at which the StockTrade
-        // with the stockSymbol is located
-        int index = 0;
         boolean found = false;
-        while (!found && index < this.numStockTrades) {
-            if (this.stockTradeLog[index].getSymbol()
-                    .compareTo(stockSymbol) == 0) {
+        
+        Iterator<StockTrade> iter = this.stockTradeLog.iterator();
+        while (!found && iter.hasNext()) {
+            StockTrade trade = iter.next();
+            if (trade.getSymbol()
+                    .equals(stockSymbol)) {
                 found = true;
-            } else {
-                index++;
             }
         }
         
@@ -182,8 +187,10 @@ public class StockTradeLogImpl {
     public double totalStockTradeValue() {
         double totalValue = 0;
         
-        for (int i = 0; i < this.numStockTrades; i++) {
-            totalValue += getStockTradeValue(this.stockTradeLog[i]);
+        Iterator<StockTrade> iter = this.stockTradeLog.iterator();
+        while (iter.hasNext()) {
+            StockTrade trade = iter.next();
+            totalValue += getStockTradeValue(trade);
         }
         
         return totalValue;
@@ -197,10 +204,12 @@ public class StockTradeLogImpl {
     public double totalStockTradeValue(String licenseNumber) {
         double totalValue = 0;
         
-        for (int i = 0; i < this.numStockTrades; i++) {
-            if (this.stockTradeLog[i].getLicenseNumber()
+        Iterator<StockTrade> iter = this.stockTradeLog.iterator();
+        while (iter.hasNext()) {
+            StockTrade trade = iter.next();
+            if (trade.getLicenseNumber()
                     .equals(licenseNumber)) {
-                totalValue =+ getStockTradeValue(this.stockTradeLog[i]);
+                totalValue =+ getStockTradeValue(trade);
             }
         }
         

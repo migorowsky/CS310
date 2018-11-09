@@ -5,29 +5,69 @@
  */
 package cs310frett;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author katefrett
  */
 public class FundManagerLogImpl {
-    private ArrayList<FundManager> fundManagerLog;
+    private FundManagerNode head;
 
     /**
      * Default parameterless constructor
      */
     public FundManagerLogImpl() {
-         this.fundManagerLog = new ArrayList<>();
+         this.head = null;
     }
     
     /**
-     * Retrieve private member variable fundManagerLog
+     * Sets the head member variable to the value passed in.
      * 
-     * @return
+     * @param newHead 
      */
-    public ArrayList<FundManager> getFundManagerLog() {
-        return this.fundManagerLog;
+    public void setHead(FundManagerNode newHead) {
+        this.head = newHead;
+    }
+    
+    /** 
+     * Data accessor for the private member variable head.
+     * @return 
+     */
+    public FundManagerNode getHead() {
+        return this.head;
+    }
+    
+    /**
+     * Displays each element in the collection, after displaying a header
+     */
+    public void traverseDisplay() {
+        System.out.println("FundManager Log:");
+        
+        FundManagerNode current = this.head;
+        while (current != null) {
+            System.out.println("     " + current.getFundManager().toString());
+            current = current.getNextNode();
+        }
+    }
+    
+    /**
+     * Removes any FundManager items having invalid licenseNumbers
+     * from the collection
+     */
+    public void cleanUp(StockTradeLogImpl stockTradeLog) {
+        FundManagerNode currentNode = this.head;
+        
+        while (currentNode != null) {
+            FundManager fundManager = currentNode.getFundManager();
+            if (!fundManager.licenseNumberIsValid()) {
+                String licenseNumber = fundManager.getLicenseNumber();
+                System.out.println("Invalid licenseNumber for fundManager " + 
+                        licenseNumber + " -- Deleting fundManager and all "
+                                + "their stockTrades from log");
+                removeFundManager(licenseNumber);
+                stockTradeLog.removeStockTradesByFundManager(licenseNumber);
+            }
+            currentNode = currentNode.getNextNode();
+        }
     }
     
     /**
@@ -37,25 +77,37 @@ public class FundManagerLogImpl {
      * @return 
      */
     public boolean addFundManager(FundManager fundManager) { 
-        boolean success = true;
+        boolean success = false;
         
-        // find the appropriate index at which the fundManager should 
-        // be inserted into the log 
-        int index = 0;
-        boolean found = false;
-        while (!found && index < this.fundManagerLog.size()) {
-            if (this.fundManagerLog.get(index).getLicenseNumber()
-                    .compareTo(fundManager.getLicenseNumber()) > 0) {
-                found = true;
-            } else {
-                index++;
+        FundManagerNode newNode = new FundManagerNode(fundManager);
+       
+        if (this.head == null) {
+            // handle empty collection
+            head = newNode;
+            success = true;
+        } else if (newNode.getFundManager().getLicenseNumber()
+                .compareTo(this.head.getFundManager().getLicenseNumber()) < 0) {
+            // handle a node that belongs before the head node
+            newNode.setNextNode(head);
+            this.head = newNode;
+            success = true;
+        } else {
+            // handle a new node that needs to be inserted in the middle/end 
+            // of the collection
+            FundManagerNode previous = this.head;
+            FundManagerNode current = this.head.getNextNode();
+            while (current != null && 
+                    newNode.getFundManager().getLicenseNumber()
+                            .compareTo(this.head.getFundManager()
+                                    .getLicenseNumber()) >= 0) {
+                previous = current;
+                current = current.getNextNode();
             }
+            newNode.setNextNode(current);
+            previous.setNextNode(newNode);
+            success = false;
         }
         
-        // insert the fundManager at the appropriate index
-        this.fundManagerLog.add(index, fundManager);
-        
-        // TODO - under what conditions could this method fail?  When should false be returned?
         return success;
     }
     
@@ -67,28 +119,35 @@ public class FundManagerLogImpl {
      * @return 
      */
     public boolean removeFundManager (String licenseNumber) {
-        boolean success = true;
+        boolean success = false;
         
-        // find the appropriate index at which the fundManager to be deleted 
-        // is located
-        int index = 0;
-        boolean found = false;
-        while (!found && index < this.fundManagerLog.size()) {
-            if (this.fundManagerLog.get(index).getLicenseNumber()
-                    .compareTo(licenseNumber) == 0) {
-                found = true;
-            } else {
-                index++;
+        if (this.head != null) {
+            SearchResult searchResult = findNodeByLicenseNumber(licenseNumber);
+            
+            if (searchResult.isFound()) {
+                if (searchResult.getPrevious() == null) {
+                    // handle removal of head node
+                    if (searchResult.getCurrent().getNextNode() == null) {
+                        // linked list only contains one element, and it's the 
+                        // item to be removed
+                        this.head = null;
+                    } else {
+                        // the new head node should be the one after the 
+                        // current head node
+                        this.head = searchResult.getCurrent().getNextNode();
+                    }
+                } else {
+                    // handle removal of all other nodes
+                    searchResult.getPrevious().setNextNode(
+                            searchResult.getCurrent().getNextNode());
+                }
             }
-        }
-        
-        if (!found) {
-            // no matching licenseNumber was found in the log, so 
-            // nothing could be deleted
-            success = false; 
-        } else {
-            this.fundManagerLog.remove(index);
-        }
+            else {
+                // no matching licenseNumber was found in the log, so 
+                // nothing could be deleted
+                success = false; 
+            } 
+        } 
         
         return success;
     }
@@ -102,22 +161,89 @@ public class FundManagerLogImpl {
     public boolean isLicenseUnique(String licenseNumber) {
         boolean isUnique = true;
         
-        // find the appropriate index at which the fundManager
-        // with the licenseNumber is located
-        int index = 0;
+        SearchResult searchResult = findNodeByLicenseNumber(licenseNumber);
+        isUnique = !searchResult.isFound();
+        
+        return isUnique;
+    }
+    
+    /**
+     * Method that searches through the log to find the FundManagerNode with a 
+     * specific license number.  
+     * @param licenseNumber
+     * @return SearchResult object containing the current node (the one with the 
+     *         licenseNumber matching the search criteria) and the previous node
+     */
+    private SearchResult findNodeByLicenseNumber(String licenseNumber) {
         boolean found = false;
-        while (!found && index < this.fundManagerLog.size()) {
-            if (this.fundManagerLog.get(index).getLicenseNumber()
+        
+        FundManagerNode previous = null;
+        FundManagerNode current = this.head;   
+        
+        while (!found && current != null) {
+            if (current.getFundManager().getLicenseNumber()
                     .equals(licenseNumber)) {
                 found = true;
             } else {
-                index++;
+                previous = current;
+                current = current.getNextNode();
             }
         }
         
-        // if the licenseNumber exists in the log, it's not unique
-        isUnique = !found;
+        SearchResult searchResult;
+        if (found) {
+            searchResult = new SearchResult(found, previous, current);
+        } else {
+            searchResult = new SearchResult(found);
+        }
         
-        return isUnique;
+        return searchResult;
+    }
+    
+    /**
+     * Private class used to encapsulate the results of searching through the 
+     * FundManagerLog so they can be easily passed between methods.
+     */
+    private class SearchResult {
+        boolean found;
+        FundManagerNode previous;
+        FundManagerNode current;
+
+        public SearchResult(boolean found, FundManagerNode previous, FundManagerNode current) {
+            this.found = found;
+            this.previous = previous;
+            this.current = current;
+        }
+
+        public SearchResult(boolean found) {
+            this(found, null, null);
+        }
+
+        public SearchResult() {
+        }
+
+        public boolean isFound() {
+            return found;
+        }
+
+        public void setFound(boolean found) {
+            this.found = found;
+        }
+
+        public FundManagerNode getPrevious() {
+            return previous;
+        }
+
+        public void setPrevious(FundManagerNode previous) {
+            this.previous = previous;
+        }
+
+        public FundManagerNode getCurrent() {
+            return current;
+        }
+
+        public void setCurrent(FundManagerNode current) {
+            this.current = current;
+        }        
     }
 }
