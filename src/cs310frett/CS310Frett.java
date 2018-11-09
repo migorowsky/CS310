@@ -58,7 +58,7 @@ public class CS310Frett {
      * Invokes the cleanUp methods on the fundManager log and stockTrade log
      */
     private static void cleanupLogs() {
-        fundManagerLogImpl.cleanUp();
+        fundManagerLogImpl.cleanUp(stockTradeLogImpl);
         stockTradeLogImpl.cleanUp();
     }
     

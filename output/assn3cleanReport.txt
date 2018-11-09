@@ -17,5 +17,5 @@ BBB67890   Morgan, Bobby
      Number of StockTrade Listings for FundManager: 0
      Total sales value of StockTrade Listings for FundManager BBB67890:  $ .00
 
-Total Number of StockTrade Listings for ALL FundManagers = 5
-Total sales value of StockTrade Listings for ALL FundManagers = $ 345.40
+Total Number of StockTrade Listings for ALL FundManagers = 3
+Total sales value of StockTrade Listings for ALL FundManagers = $ 320.40

@@ -53,13 +53,15 @@ public class FundManagerLogImpl {
      * Removes any FundManager items having invalid licenseNumbers
      * from the collection
      */
-    public void cleanUp() {
+    public void cleanUp(StockTradeLogImpl stockTradeLog) {
         FundManagerNode currentNode = this.head;
         
         while (currentNode != null) {
             FundManager fundManager = currentNode.getFundManager();
             if (!fundManager.licenseNumberIsValid()) {
-                removeFundManager(fundManager.getLicenseNumber());
+                String licenseNumber = fundManager.getLicenseNumber();
+                removeFundManager(licenseNumber);
+                stockTradeLog.removeStockTradesByFundManager(licenseNumber);
             }
             currentNode = currentNode.getNextNode();
         }
