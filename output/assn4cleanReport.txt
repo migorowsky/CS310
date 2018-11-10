@@ -1,15 +1,17 @@
 AAA12345   Smith, Andrea
 
-     Number of StockTrade Listings for FundManager: 0
-     Total sales value of StockTrade Listings for FundManager AAA12345:  $ .00
+       EEE          20000.00       250          YES
+
+     Number of StockTrade Listings for FundManager: 1
+     Total sales value of StockTrade Listings for FundManager AAA12345:  $ 5000000.00
 
 BBB12345   Erhardt, Amelia
 
-       DEF          10000.00       400          YES
+       AAA          10000.00       400          YES
 
-       GHI          20000.00       250          NO 
+       BBB          20000.00       250          NO 
 
-       AABC         30000.00       360          YES
+       CCCC         30000.00       360          YES
 
      Number of StockTrade Listings for FundManager: 3
      Total sales value of StockTrade Listings for FundManager BBB12345:  $ 19800000.00
@@ -21,17 +23,65 @@ CCC34567   Helm, Sally
 
 EEE67890   Morgan, Bobby
 
-       DICE         9000.50        500          YES
+       KKKK         9000.50        500          YES
 
      Number of StockTrade Listings for FundManager: 1
      Total sales value of StockTrade Listings for FundManager EEE67890:  $ 4500250.00
 
 GGG67890   Smith, Bob
 
-       WXY          55000.00       250          NO 
+       LLL          25000.00       400          YES
+
+       MMM          55000.00       250          NO 
+
+     Number of StockTrade Listings for FundManager: 2
+     Total sales value of StockTrade Listings for FundManager GGG67890:  $ 23750000.00
+
+HHH67890   Taylor, Dave
+
+       NNN          5000.00        400          YES
 
      Number of StockTrade Listings for FundManager: 1
-     Total sales value of StockTrade Listings for FundManager GGG67890:  $ 13750000.00
+     Total sales value of StockTrade Listings for FundManager HHH67890:  $ 2000000.00
 
-Total Number of StockTrade Listings for ALL FundManagers = 6
-Total sales value of StockTrade Listings for ALL FundManagers = $ 38050250.00
+III67890   Wilson, Liz
+
+       OOO          6000.00        400          YES
+
+     Number of StockTrade Listings for FundManager: 1
+     Total sales value of StockTrade Listings for FundManager III67890:  $ 2400000.00
+
+JJJ67890   Gabriel, Peter
+
+       PPP          7000.00        400          YES
+
+     Number of StockTrade Listings for FundManager: 1
+     Total sales value of StockTrade Listings for FundManager JJJ67890:  $ 2800000.00
+
+KKK67890   Tyler, Steven
+
+       QQQ          8000.00        400          YES
+
+     Number of StockTrade Listings for FundManager: 1
+     Total sales value of StockTrade Listings for FundManager KKK67890:  $ 3200000.00
+
+LLL67890   Farrell, Perry
+
+       RRR          30000.00       300          YES
+
+       SSS          10000.00       100          NO 
+
+     Number of StockTrade Listings for FundManager: 2
+     Total sales value of StockTrade Listings for FundManager LLL67890:  $ 10000000.00
+
+MMM67890   Joel, Billy
+
+       TTT          20000.00       300          YES
+
+       UUU          21000.00       100          NO 
+
+     Number of StockTrade Listings for FundManager: 2
+     Total sales value of StockTrade Listings for FundManager MMM67890:  $ 8100000.00
+
+Total Number of StockTrade Listings for ALL FundManagers = 16
+Total sales value of StockTrade Listings for ALL FundManagers = $ 81550250.00
