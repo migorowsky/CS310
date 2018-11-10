@@ -14,11 +14,9 @@ import java.util.Scanner;
  * @author katefrett
  */
 public class CS310Frett {
-    private static final String INPUT_FILENAME = "./input/assn3input1.txt";
-    private static final String INITIAL_REPORT_FILENAME = 
-            "./output/assn3initialReport.txt";
+    private static final String INPUT_FILENAME = "./input/assn4input1.txt";
     private static final String CLEAN_REPORT_FILENAME = 
-            "./output/assn3cleanReport.txt";
+            "./output/assn4cleanReport.txt";
     
     private static final String BROKER_LINE_IDENTIFIER = "BROKER";
     private static final String ADD_BROKER = "ADD";
@@ -41,7 +39,6 @@ public class CS310Frett {
     public static void main(String[] args) {
         processInputFile();
         printAuditTrail();
-        createReport("initial");
         cleanupLogs();
         createReport("clean");
     }
@@ -325,13 +322,10 @@ public class CS310Frett {
         System.out.println("\nCreating " + reportType + " report...\n");
         
         PrintImpl printImpl = new PrintImpl();
-        if (reportType.equals("initial")) {
-            printImpl.generateReport(fundManagerLogImpl, stockTradeLogImpl, 
-                    INITIAL_REPORT_FILENAME);
-        } else {
-            printImpl.generateReport(fundManagerLogImpl, stockTradeLogImpl, 
+        
+        printImpl.generateReport(fundManagerLogImpl, stockTradeLogImpl, 
                      CLEAN_REPORT_FILENAME);
-        }
+        
     }
     
     /**
