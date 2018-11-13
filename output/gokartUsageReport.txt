@@ -1,0 +1,17 @@
+GO-KART USAGE REPORT
+Liz Wilson is using go-kart number 1
+Dave Taylor is using go-kart number 2
+Peter Frampton is using go-kart number 3
+Sally Helm is using go-kart number 4
+Bob Smith is using go-kart number 5
+Amelia Erhardt is using go-kart number 6
+Andrea Smith is using go-kart number 7
+AVAILABLE GO-KARTS
+   BASIC GO-KARTS
+      No basic go-karts are available
+   RACING GO-KARTS
+      No racing go-karts are available
+TOP BROKER QUEUE
+There are no top brokers waiting
+STANDARD BROKER QUEUE
+There are no standard brokers waiting
