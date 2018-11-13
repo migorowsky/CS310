@@ -25,14 +25,14 @@ public class CS310Frett {
     private static final String TRADE_LINE_IDENTIFIER = "TRADE";
     private static final String BUY_SHARES = "BUY";
     private static final String SELL_SHARES = "SELL";
-    
+      
     private static final String REGARDLESS_OF_ERRORS = ", regardless of data errors.";
     
     private static FundManagerLogImpl fundManagerLogImpl = 
             new FundManagerLogImpl();
     private static StockTradeLogImpl stockTradeLogImpl = 
             new StockTradeLogImpl();
-
+    
     /**
      * @param args the command line arguments
      */
@@ -41,6 +41,8 @@ public class CS310Frett {
         printAuditTrail();
         cleanupLogs();
         createReport("clean");
+        
+        GoKartProcessor.processGokartData(fundManagerLogImpl, stockTradeLogImpl);
     }
     
     /**

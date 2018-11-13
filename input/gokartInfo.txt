@@ -1,2 +1,0 @@
-REQUEST brokerLicenseNumber
-RETURN brokerLicenseNumber

@@ -83,5 +83,14 @@ MMM67890   Joel, Billy
      Number of StockTrade Listings for FundManager: 2
      Total sales value of StockTrade Listings for FundManager MMM67890:  $ 8100000.00
 
-Total Number of StockTrade Listings for ALL FundManagers = 16
-Total sales value of StockTrade Listings for ALL FundManagers = $ 81550250.00
+NNN67890   Frampton, Peter
+
+       WWW          25000.00       3000         YES
+
+       XXX          28000.00       1000         NO 
+
+     Number of StockTrade Listings for FundManager: 2
+     Total sales value of StockTrade Listings for FundManager NNN67890:  $ 103000000.00
+
+Total Number of StockTrade Listings for ALL FundManagers = 18
+Total sales value of StockTrade Listings for ALL FundManagers = $ 184550250.00
