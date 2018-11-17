@@ -167,6 +167,17 @@ public class FundManagerLogImpl {
         return isUnique;
     }
     
+    public FundManager getFundManager(String licenseNumber) {
+        FundManager fundManager = null;
+        
+        SearchResult searchResult = findNodeByLicenseNumber(licenseNumber);
+        if (searchResult.isFound()) {
+            fundManager = searchResult.getCurrent().getFundManager();
+        }
+        
+        return fundManager;
+    }
+    
     /**
      * Method that searches through the log to find the FundManagerNode with a 
      * specific license number.  
