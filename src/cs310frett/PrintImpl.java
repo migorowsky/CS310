@@ -73,7 +73,8 @@ public class PrintImpl {
                 PrintWriter writer = new PrintWriter(
                     new FileWriter(outputFilename));
             
-                System.out.println("Creating report...");
+                System.out.printf("Creating sales report using requests from "
+                        + "file %s...\n", inputFileName);
             
                 String nextLine;
                 while(fileScanner.hasNextLine()) {
@@ -87,6 +88,8 @@ public class PrintImpl {
 
                 writer.close();
                 fileScanner.close();
+                System.out.printf("Sales report is complete "
+                        + "-- located in file: %s", outputFilename);
             }   
         } catch (IOException ioe) {
             System.out.printf("Error writing to output file %s\n",

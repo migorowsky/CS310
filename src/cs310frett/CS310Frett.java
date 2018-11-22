@@ -40,7 +40,7 @@ public class CS310Frett {
         processInputFile();
         fundManagerLogImpl.displayHash();
         stockTradeLogImpl.displayHash();
-        createReport("clean");
+        createReport("initial");
     }
     
     /**
