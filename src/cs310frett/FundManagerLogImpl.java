@@ -10,251 +10,135 @@ package cs310frett;
  * @author katefrett
  */
 public class FundManagerLogImpl {
-    private FundManagerNode head;
+    protected static final int STARTING_SIZE = 19;
+    private FundManager[] hashTable;
 
     /**
      * Default parameterless constructor
      */
     public FundManagerLogImpl() {
-         this.head = null;
+         this.hashTable = new FundManager[STARTING_SIZE];
     }
     
     /**
-     * Sets the head member variable to the value passed in.
-     * 
-     * @param newHead 
+     * Displays the contents of the hashmap that underlies the 
+     * FundManagerLogImpl, including what index each data point is located at
      */
-    public void setHead(FundManagerNode newHead) {
-        this.head = newHead;
-    }
-    
-    /** 
-     * Data accessor for the private member variable head.
-     * @return 
-     */
-    public FundManagerNode getHead() {
-        return this.head;
-    }
-    
-    /**
-     * Displays each element in the collection, after displaying a header
-     */
-    public void traverseDisplay() {
-        System.out.println("FundManager Log:");
-        
-        FundManagerNode current = this.head;
-        while (current != null) {
-            System.out.println("     " + current.getFundManager().toString());
-            current = current.getNextNode();
-        }
-    }
-    
-    /**
-     * Removes any FundManager items having invalid licenseNumbers
-     * from the collection
-     */
-    public void cleanUp(StockTradeLogImpl stockTradeLog) {
-        FundManagerNode currentNode = this.head;
-        
-        while (currentNode != null) {
-            FundManager fundManager = currentNode.getFundManager();
-            if (!fundManager.licenseNumberIsValid()) {
-                String licenseNumber = fundManager.getLicenseNumber();
-                System.out.println("Invalid licenseNumber for fundManager " + 
-                        licenseNumber + " -- Deleting fundManager and all "
-                                + "their stockTrades from log");
-                removeFundManager(licenseNumber);
-                stockTradeLog.removeStockTradesByFundManager(licenseNumber);
+    public void displayHash() {
+        System.out.println("\nFundManager Hash Table:");
+        for (int i = 0; i < this.hashTable.length; i++) {
+            // build the contents of the line
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("     Index %d ", i));
+            FundManager mgr = this.hashTable[i];
+            if (mgr != null) {
+                sb.append(String.format("contains FundManager %s, %s %s",
+                        mgr.getLicenseNumber(), 
+                        mgr.getFirstName(), 
+                        mgr.getLastName()));
+            } else {
+                sb.append("is empty");
             }
-            currentNode = currentNode.getNextNode();
-        }
-    }
-    
-    /**
-     * add FundManager object to ordered list and return true if successful
-     * 
-     * @param obj
-     * @return 
-     */
-    public boolean addFundManager(FundManager fundManager) { 
-        boolean success = false;
-        
-        FundManagerNode newNode = new FundManagerNode(fundManager);
-       
-        if (this.head == null) {
-            // handle empty collection
-            head = newNode;
-            success = true;
-        } else if (newNode.getFundManager().getLicenseNumber()
-                .compareTo(this.head.getFundManager().getLicenseNumber()) < 0) {
-            // handle a node that belongs before the head node
-            newNode.setNextNode(head);
-            this.head = newNode;
-            success = true;
-        } else {
-            // handle a new node that needs to be inserted in the middle/end 
-            // of the collection
-            FundManagerNode previous = this.head;
-            FundManagerNode current = this.head.getNextNode();
-            while (current != null && 
-                    newNode.getFundManager().getLicenseNumber()
-                            .compareTo(this.head.getFundManager()
-                                    .getLicenseNumber()) >= 0) {
-                previous = current;
-                current = current.getNextNode();
-            }
-            newNode.setNextNode(current);
-            previous.setNextNode(newNode);
-            success = false;
-        }
-        
-        return success;
-    }
-    
-    /**
-     * remove FundManager with specific license from list and 
-     * return true if successful
-     * 
-     * @param license
-     * @return 
-     */
-    public boolean removeFundManager (String licenseNumber) {
-        boolean success = false;
-        
-        if (this.head != null) {
-            SearchResult searchResult = findNodeByLicenseNumber(licenseNumber);
             
-            if (searchResult.isFound()) {
-                if (searchResult.getPrevious() == null) {
-                    // handle removal of head node
-                    if (searchResult.getCurrent().getNextNode() == null) {
-                        // linked list only contains one element, and it's the 
-                        // item to be removed
-                        this.head = null;
-                    } else {
-                        // the new head node should be the one after the 
-                        // current head node
-                        this.head = searchResult.getCurrent().getNextNode();
-                    }
+            // write the message to stdout
+            System.out.println(sb.toString());
+        }
+    }
+    
+    /**
+     * Adds the FundManager to the hashTable.  If there is a collision, it's 
+     * resolved by linear probing.  Returns boolean true/false indicating 
+     * whether the call was successful or not.
+     * @param mgr
+     * @return 
+     */
+    public boolean add(FundManager mgr) {
+        boolean inserted = false;
+        int index = mgr.hashCode();
+        
+        FundManager mgrAtAddress = this.hashTable[index];
+        
+        // attempt to insert value at address indicated by hash
+        if (mgrAtAddress == null) {
+            this.hashTable[index] = mgr;
+        } else {
+            // Collision occurred - address at hash is occupied.  Use linear 
+            // probing to find the next empty address.
+            int i = 1;
+            int idx = 0;
+            while (i < this.hashTable.length && !inserted) {
+                idx = index + i;
+
+                // be careful of exceeding the bounds of the array, but 
+                // ensure we can do wraparounds when we reach the end of 
+                // the array 
+                if (idx >= this.hashTable.length) {
+                    idx = idx - this.hashTable.length;
+                }
+                if (this.hashTable[idx] == null) {
+                    // if we hit a null address, then insert the new FundManager 
+                    this.hashTable[idx] = mgr;
+                    inserted = true;
                 } else {
-                    // handle removal of all other nodes
-                    searchResult.getPrevious().setNextNode(
-                            searchResult.getCurrent().getNextNode());
+                    // address not null, so cannot insert value here.  
+                    // Increment counter and continue looping.
+                    i++;
                 }
             }
-            else {
-                // no matching licenseNumber was found in the log, so 
-                // nothing could be deleted
-                success = false; 
-            } 
-        } 
-        
-        return success;
-    }
-    
-    /**
-     * test if FundManager with specific license exists in log
-     * 
-     * @param license
-     * @return 
-     */
-    public boolean isLicenseUnique(String licenseNumber) {
-        boolean isUnique = true;
-        
-        SearchResult searchResult = findNodeByLicenseNumber(licenseNumber);
-        isUnique = !searchResult.isFound();
-        
-        return isUnique;
-    }
-    
-    public FundManager getFundManager(String licenseNumber) {
-        FundManager fundManager = null;
-        
-        SearchResult searchResult = findNodeByLicenseNumber(licenseNumber);
-        if (searchResult.isFound()) {
-            fundManager = searchResult.getCurrent().getFundManager();
         }
         
-        return fundManager;
+        return inserted;
     }
     
     /**
-     * Method that searches through the log to find the FundManagerNode with a 
-     * specific license number.  
+     * Find FundManager in hashMap by the license number. If fundManager is not 
+     * present in the hashmap, null is returned.
      * @param licenseNumber
-     * @return SearchResult object containing the current node (the one with the 
-     *         licenseNumber matching the search criteria) and the previous node
+     * @return 
      */
-    private SearchResult findNodeByLicenseNumber(String licenseNumber) {
-        boolean found = false;
+    public FundManager find(String licenseNumber) {
+        FundManager foundMgr = null;
         
-        FundManagerNode previous = null;
-        FundManagerNode current = this.head;   
+        int index = FundManager.generateHashFromLicenseNumber(licenseNumber);
         
-        while (!found && current != null) {
-            if (current.getFundManager().getLicenseNumber()
-                    .equals(licenseNumber)) {
-                found = true;
+        FundManager mgr = this.hashTable[index];
+        if (mgr != null ) {
+            if (mgr.getLicenseNumber().equals(licenseNumber)) {
+                // FundManager found at address indicated by hash
+                foundMgr = mgr;
             } else {
-                previous = current;
-                current = current.getNextNode();
+                // Collision occurred upon insert.  Use linear probing to find
+                // the matching fund manager if it exists in the collection.
+                boolean cont = true;
+                int i = 1;
+                int idx = 0;
+                while (i < this.hashTable.length && cont) {
+                    idx = index + i;
+                    
+                    // be careful of exceeding the bounds of the array, but 
+                    // ensure we can do wraparounds when we reach the end of 
+                    // the array 
+                    if (idx >= this.hashTable.length) {
+                        idx = idx - this.hashTable.length;
+                    }
+                    if (this.hashTable[idx] == null) {
+                        // if we hit a null address, then the licenseNumber is 
+                        // not in the hashTable.  Exit the loop & return null.
+                        cont = false;
+                    } else if (this.hashTable[idx].getLicenseNumber().equals(licenseNumber)){
+                        // if the address is not null and the license matches, 
+                        // we found the requested value. Exit the loop * return 
+                        // matching value.
+                        cont = false;
+                        foundMgr = this.hashTable[idx];
+                    } else {
+                        // no match - increment counter and continue iterating
+                        i++;
+                    }
+                }
             }
         }
         
-        SearchResult searchResult;
-        if (found) {
-            searchResult = new SearchResult(found, previous, current);
-        } else {
-            searchResult = new SearchResult(found);
-        }
-        
-        return searchResult;
-    }
-    
-    /**
-     * Private class used to encapsulate the results of searching through the 
-     * FundManagerLog so they can be easily passed between methods.
-     */
-    private class SearchResult {
-        boolean found;
-        FundManagerNode previous;
-        FundManagerNode current;
-
-        public SearchResult(boolean found, FundManagerNode previous, FundManagerNode current) {
-            this.found = found;
-            this.previous = previous;
-            this.current = current;
-        }
-
-        public SearchResult(boolean found) {
-            this(found, null, null);
-        }
-
-        public SearchResult() {
-        }
-
-        public boolean isFound() {
-            return found;
-        }
-
-        public void setFound(boolean found) {
-            this.found = found;
-        }
-
-        public FundManagerNode getPrevious() {
-            return previous;
-        }
-
-        public void setPrevious(FundManagerNode previous) {
-            this.previous = previous;
-        }
-
-        public FundManagerNode getCurrent() {
-            return current;
-        }
-
-        public void setCurrent(FundManagerNode current) {
-            this.current = current;
-        }        
+        return foundMgr;
     }
 }

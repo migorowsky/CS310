@@ -286,4 +286,30 @@ public class StockTrade {
                 ", licenseNumber=" + licenseNumber + 
                 ", taxable=" + taxable + '}';
     }
+    
+    /**
+     * Calculates the hashCode for a StockTrade object using the Summing Values 
+     * Method.
+     * @return 
+     */
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        if (this.symbol != null && this.symbol != "") {
+            hash = generateHashFromSymbol(this.symbol);
+        }
+        return hash;
+    }
+    
+    protected static int generateHashFromSymbol(String symbol) {
+        int hash = 0;
+        // add the ASCII/Unicode values of each character in the symbol
+        char[] symbolChars = symbol.toCharArray();
+        for (int i = 0; i < symbolChars.length; i++) {
+            hash += (int) symbolChars[i];   
+        }
+        
+        hash = hash % StockTradeLogImpl.STARTING_SIZE;
+        return hash;
+    }
 }

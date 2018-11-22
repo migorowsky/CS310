@@ -282,4 +282,25 @@ public class FundManager {
                 ", departmentNumber=" + departmentNumber + 
                 ", commissionRate=" + commissionRate + '}';
     }
+
+    /**
+     * Calculates the hash code of the FundManager using the modulo-division 
+     * method.
+     * @return 
+     */
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        if (this.licenseNumber != null && this.licenseNumber != "") {
+            hash = generateHashFromLicenseNumber(this.licenseNumber);
+        }
+        return hash;
+    }
+    
+    protected static int generateHashFromLicenseNumber(String licenseNumber) {
+        // extract the last 5 digit characters from the license number
+        int hash = Integer.valueOf(licenseNumber.substring(3, 7));
+        hash = hash % FundManagerLogImpl.STARTING_SIZE;
+        return hash;
+    }
 }
