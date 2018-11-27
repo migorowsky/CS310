@@ -301,7 +301,6 @@ public class FundManager {
         // extract the last 5 digit characters from the license number
         int hash = Integer.valueOf(
                 licenseNumber.substring(3, LICENSE_NUMBER_LENGTH));
-        hash = hash % FundManagerLogImpl.STARTING_SIZE;
         return hash;
     }
 }
