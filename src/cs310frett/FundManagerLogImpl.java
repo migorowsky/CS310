@@ -54,7 +54,7 @@ public class FundManagerLogImpl {
      */
     public boolean add(FundManager mgr) {
         boolean inserted = false;
-        int index = mgr.hashCode();
+        int index = mgr.hashCode() % STARTING_SIZE;
         
         FundManager mgrAtAddress = this.hashTable[index];
         
@@ -99,7 +99,8 @@ public class FundManagerLogImpl {
     public FundManager find(String licenseNumber) {
         FundManager foundMgr = null;
         
-        int index = FundManager.generateHashFromLicenseNumber(licenseNumber);
+        int index = FundManager.generateHashFromLicenseNumber(licenseNumber) 
+                % STARTING_SIZE;
         
         FundManager mgr = this.hashTable[index];
         if (mgr != null ) {

@@ -5,9 +5,6 @@
  */
 package cs310frett;
 
-import java.util.LinkedList;
-import java.util.Iterator;
-
 /**
  *
  * @author katefrett
@@ -75,7 +72,7 @@ public class StockTradeLogImpl {
     public boolean add(StockTrade stockTrade) {
         boolean success = false;
         
-        int index = stockTrade.hashCode();
+        int index = stockTrade.hashCode() % STARTING_SIZE;
         
         MapEntry entry = this.hashMap[index];
         
@@ -117,7 +114,7 @@ public class StockTradeLogImpl {
     public StockTrade find(String symbol) {
         StockTrade foundTrade = null;
         
-        int index = StockTrade.generateHashFromSymbol(symbol);
+        int index = StockTrade.generateHashFromSymbol(symbol) % STARTING_SIZE;
         
         MapEntry entry = this.hashMap[index];
         if (entry != null && entry.getValue() != null) {
