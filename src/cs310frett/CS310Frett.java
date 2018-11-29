@@ -14,11 +14,11 @@ import java.util.Scanner;
  * @author katefrett
  */
 public class CS310Frett {
-    private static final String INPUT_FILENAME = "./input/assn5input1.txt";
+    private static final String INPUT_FILENAME = "./input/assn6input1.txt";
     private static final String SALES_REPORT_INPUT_FILENAME = 
             "./input/FundManagerRequests.txt";
     private static final String SALES_REPORT_OUTPUT_FILENAME = 
-            "./output/assn5salesReport.txt";
+            "./output/assn6salesReport.txt";
     
     private static final String BROKER_LINE_IDENTIFIER = "BROKER";
     private static final String ADD_BROKER = "ADD";
@@ -38,8 +38,8 @@ public class CS310Frett {
      */
     public static void main(String[] args) {
         processInputFile();
-        fundManagerLogImpl.displayHash();
-        stockTradeLogImpl.displayHash();
+        fundManagerLogImpl.traverseDisplay();
+        stockTradeLogImpl.traverseDisplay();
         createReport("clean");
     }
     

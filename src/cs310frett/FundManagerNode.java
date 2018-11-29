@@ -11,35 +11,41 @@ package cs310frett;
  */
 public class FundManagerNode {
     private FundManager fundManager;
-    private FundManagerNode nextNode;
+    private FundManagerNode leftChild;
+    private FundManagerNode rightChild;
 
     /**
      * Default parameterless constructor
      */
     public FundManagerNode() {
-        this(null, null);
+        this(null, null, null);
     }
     
     /**
      * Constructor which calls the constructor that accepts a fundManager 
-     * and nextNode, providing null for the nextNode parameter
+     * and left and right child nodes, providing null for the left and right
+     * child parameters.
      * 
      * @param fundManager 
      */
     public FundManagerNode(FundManager fundManager) {
-        this(fundManager, null);
+        this(fundManager, null, null);
     }
     
-    /**
-     * Constructor that accepts all the values to populate all the private 
-     * member variables
-     * 
-     * @param fundManager
-     * @param nextNode 
-     */
-    public FundManagerNode(FundManager fundManager, FundManagerNode nextNode) {
+   /**
+    * Constructor that accepts all the values to populate all the private 
+    * member variables
+    * 
+    * @param fundManager
+    * @param leftChild
+    * @param rightChild 
+    */
+    public FundManagerNode(FundManager fundManager, 
+            FundManagerNode leftChild, 
+            FundManagerNode rightChild) {
         this.fundManager = fundManager;
-        this.nextNode = nextNode;
+        this.leftChild = leftChild;
+        this.rightChild = rightChild;
     }
 
     public FundManager getFundManager() {
@@ -50,13 +56,19 @@ public class FundManagerNode {
         this.fundManager = fundManager;
     }
 
-    public FundManagerNode getNextNode() {
-        return nextNode;
+    public FundManagerNode getLeftChild() {
+        return leftChild;
     }
 
-    public void setNextNode(FundManagerNode nextNode) {
-        this.nextNode = nextNode;
+    public void setLeftChild(FundManagerNode leftChild) {
+        this.leftChild = leftChild;
     }
-    
-    
+
+    public FundManagerNode getRightChild() {
+        return rightChild;
+    }
+
+    public void setRightChild(FundManagerNode rightChild) {
+        this.rightChild = rightChild;
+    }
 }
