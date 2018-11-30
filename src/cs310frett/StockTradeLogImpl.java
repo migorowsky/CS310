@@ -5,141 +5,65 @@
  */
 package cs310frett;
 
-import java.util.LinkedList;
-import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  *
  * @author katefrett
  */
 public class StockTradeLogImpl {
-    private static int MAX_TRADES = 1000;
-    
-    protected static final int STARTING_SIZE = 17;
-    private MapEntry[] hashMap;
-
-//    private int numStockTrades;
+    private TreeMap<String, StockTrade> treeMap;
 
     /**
      * Default parameterless constructor
      */
     public StockTradeLogImpl() {
-//        this.numStockTrades = 0;
-        this.hashMap = new MapEntry[STARTING_SIZE];
+        this.treeMap = new TreeMap<>();
     }
 
     /** 
-     * Data accessor for the private member variable hashMap
+     * Data accessor for the private member variable treeMap
      * @return 
      */
-    public MapEntry[] getStockTradeLog() {
-        return hashMap;
+    public TreeMap<String, StockTrade> getStockTradeLog() {
+        return treeMap;
     }
     
     /**
-     * Displays the contents of the hashmap that underlies the 
-     * StockTradeLogImpl, including what index each data point is located at
+     * Traverses the treeMap in an "in-order" manner and outputs 
+     * the contents of the treeMap to stdout
      */
-    public void displayHash() {
-        System.out.println("\nStockTrade Hash Table:");
-    
-        for (int i = 0; i < this.hashMap.length; i++) {
-            // build the contents of the line
-            StringBuilder sb = new StringBuilder();
-            sb.append(String.format("     Index %d ", i));
-            MapEntry entry = this.hashMap[i];
-            if (entry != null && entry.getValue() != null) {
-                StockTradeNode node = entry.getValue();
-                sb.append("contains StockTrades: ");
-                // iterate through the linked list and append each 
-                // Stock Trade's symbol to the line
-                while (node != null) {
-                    sb.append(String.format("%s ", 
-                            node.getStockTrade().getSymbol()));
-                    node = node.getNextNode();
-                }
-            } else {
-                sb.append("is empty");
-            }
-            
-            // write the message to stdout
-            System.out.println(sb.toString());
-        }
+    public void traverseDisplay() {
+        System.out.println("\nStockTrade List:");
+        
+        // according to the internet, inorder traversal is the only method of
+        // traversal that is allowed for the Java TreeMap data structure, and 
+        // it is the default iteration method
+        // reference: 
+        // https://stackoverflow.com/questions/47386727/traversals-for-java-treemap
+        
+        for (Map.Entry<String, StockTrade> e : this.treeMap.entrySet()) {
+            System.out.println("   " + e.getKey());
+        }   
     }
     
     /**
-     * add StockTrade to hashMap if there is room, and return true if successful
+     * add StockTrade to treeMap 
      * @param stockTrade
      * @return 
      */
-    public boolean add(StockTrade stockTrade) {
-        boolean success = false;
-        
-        int index = stockTrade.hashCode();
-        
-        MapEntry entry = this.hashMap[index];
-        
-        // TODO - come back to this
-        if (entry == null) {
-            // no data has been stored at this location yet.  Create a node 
-            // and add it to the collection.
-            StockTradeNode node = new StockTradeNode(stockTrade, null);
-            // it seems redundant to store the array index in the MapEntry.key, 
-            // but that's what the specifications require - is this correct?
-            entry = new MapEntry(index, node);
-            this.hashMap[index] = entry; 
-            success = true;
-        } else {
-            // a stock trade already exists at this location.  Need to add this 
-            // new StockTrade to the end of the linkedList that is stored at 
-            // this index.
-            StockTradeNode newNode = new StockTradeNode(stockTrade, null);
-            StockTradeNode existingNode = entry.getValue();
-            // traverse the linked list until we reach the node with no nextNode
-            while (existingNode.getNextNode() != null) {
-                existingNode = existingNode.getNextNode();
-            }
-            // set the nextNode for the last node in the 
-            // linkedList to the newNode
-            existingNode.setNextNode(newNode);
-            success = true;
-        }
-        
-        return success;
+    public void add(StockTrade stockTrade) {
+        this.treeMap.put(stockTrade.getSymbol(), stockTrade);
     }
     
     /**
-     * Find StockTrade in hashMap by the stock symbol. If trade is not present 
-     * in the hashmap, null is returned.
+     * Find StockTrade in treeMap by the stock symbol. If trade is not present 
+     * in the treeMap, null is returned.
      * @param symbol
      * @return 
      */
     public StockTrade find(String symbol) {
-        StockTrade foundTrade = null;
-        
-        int index = StockTrade.generateHashFromSymbol(symbol);
-        
-        MapEntry entry = this.hashMap[index];
-        if (entry != null && entry.getValue() != null) {
-            
-            StockTradeNode nextNode = entry.getValue();
-            boolean found = false;
-            
-            // traverse the linkedList stored at this index until the matching 
-            // stockTrade is found, or we reach the end of the list
-            while (nextNode != null && found != true) {
-                StockTrade trade = nextNode.getStockTrade();
-                if (trade.getSymbol().equals(symbol)) { 
-                    // matching value was found - exit loop
-                    foundTrade = trade;
-                    found = true;
-                } else {
-                    // no match - move on to next element in linkedList
-                    nextNode = nextNode.getNextNode();
-                }
-            }
-        }
-        
-        return foundTrade;
+        return this.treeMap.get(symbol);
     }
 }

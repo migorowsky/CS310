@@ -11,133 +11,144 @@ package cs310frett;
  */
 public class FundManagerLogImpl {
     protected static final int STARTING_SIZE = 19;
-    private FundManager[] hashTable;
+    // the Binary Search Tree root element
+    private FundManagerNode bstRoot = null;
 
     /**
      * Default parameterless constructor
      */
-    public FundManagerLogImpl() {
-         this.hashTable = new FundManager[STARTING_SIZE];
+    public FundManagerLogImpl() {}
+    
+    /**
+     * Entry point for callers who want to print the contents of the BST
+     */
+    public void traverseDisplay() {
+        System.out.println("\nFundManager List:");
+        inorderTraverse(this.bstRoot);
     }
     
     /**
-     * Displays the contents of the hashmap that underlies the 
-     * FundManagerLogImpl, including what index each data point is located at
+     * Recursively traverses the BST in an "in-order" manner and outputs 
+     * the contents of the BST to stdout
+     * @param root 
      */
-    public void displayHash() {
-        System.out.println("\nFundManager Hash Table:");
-        for (int i = 0; i < this.hashTable.length; i++) {
-            // build the contents of the line
-            StringBuilder sb = new StringBuilder();
-            sb.append(String.format("     Index %d ", i));
-            FundManager mgr = this.hashTable[i];
-            if (mgr != null) {
-                sb.append(String.format("contains FundManager %s, %s %s",
-                        mgr.getLicenseNumber(), 
-                        mgr.getFirstName(), 
-                        mgr.getLastName()));
-            } else {
-                sb.append("is empty");
-            }
+    private void inorderTraverse(FundManagerNode root){
+        // if tree is empty, do nothing
+        if (root != null) {
+            // else inorder traverse the left subtree
+            inorderTraverse(root.getLeftChild());
+        
+            // visit root
+            FundManager mgr = root.getFundManager();
+            System.out.println(String.format("   FundManager %s, %s %s",
+                mgr.getLicenseNumber(), 
+                mgr.getFirstName(), 
+                mgr.getLastName()));
             
-            // write the message to stdout
-            System.out.println(sb.toString());
+            // inorder traverse the right subtree
+            inorderTraverse(root.getRightChild());
         }
     }
     
     /**
-     * Adds the FundManager to the hashTable.  If there is a collision, it's 
-     * resolved by linear probing.  Returns boolean true/false indicating 
-     * whether the call was successful or not.
+     * Entry point for callers who want to insert a record but do not know the 
+     * root node of the BST.
      * @param mgr
      * @return 
      */
-    public boolean add(FundManager mgr) {
-        boolean inserted = false;
-        int index = mgr.hashCode();
-        
-        FundManager mgrAtAddress = this.hashTable[index];
-        
-        // attempt to insert value at address indicated by hash
-        if (mgrAtAddress == null) {
-            this.hashTable[index] = mgr;
-        } else {
-            // Collision occurred - address at hash is occupied.  Use linear 
-            // probing to find the next empty address.
-            int i = 1;
-            int idx = 0;
-            while (i < this.hashTable.length && !inserted) {
-                idx = index + i;
-
-                // be careful of exceeding the bounds of the array, but 
-                // ensure we can do wraparounds when we reach the end of 
-                // the array 
-                if (idx >= this.hashTable.length) {
-                    idx = idx - this.hashTable.length;
-                }
-                if (this.hashTable[idx] == null) {
-                    // if we hit a null address, then insert the new FundManager 
-                    this.hashTable[idx] = mgr;
-                    inserted = true;
-                } else {
-                    // address not null, so cannot insert value here.  
-                    // Increment counter and continue looping.
-                    i++;
-                }
-            }
-        }
-        
-        return inserted;
+    public void add(FundManager mgr) {
+        this.bstRoot = this.add(this.bstRoot, mgr);
     }
     
     /**
-     * Find FundManager in hashMap by the license number. If fundManager is not 
-     * present in the hashmap, null is returned.
+     * Adds the FundManager to the binary search tree using recursion.  
+     * 
+     * @param mgr
+     * @return 
+     */
+    private FundManagerNode add(FundManagerNode currentRoot, FundManager mgr) {        
+        
+        if (currentRoot == null) {
+            FundManagerNode newNode = new FundManagerNode(mgr);
+            currentRoot = newNode;
+        }
+        else {
+            int compareResult = mgr.getLicenseNumber()
+                    .compareTo(currentRoot.getFundManager().getLicenseNumber());
+            
+            // licenseNumber is less than the value on the currentRoot node
+            if (compareResult < 0) {    
+                if (currentRoot.getLeftChild() != null) { 
+                    add(currentRoot.getLeftChild(), mgr);
+                } 
+                else {
+                    FundManagerNode newNode = new FundManagerNode(mgr);
+                    currentRoot.setLeftChild(newNode); 
+                }
+            } 
+            
+            // licenseNumber is greater than the value on the currentRoot node
+            if (compareResult > 0) {
+                if (currentRoot.getRightChild() != null) {
+                    add(currentRoot.getRightChild(), mgr);
+                } 
+                else {
+                    FundManagerNode newNode = new FundManagerNode(mgr);
+                    currentRoot.setRightChild(newNode);  
+                }
+            }
+            
+            // licenseNumber equals the value on the currentRoot node - it's a
+            // duplicate and cannot be inserted
+            if (compareResult == 0) {
+                // no-op
+            }
+        }   
+        
+        return currentRoot;
+    }
+    
+    /**
+     * Entry point for callers who want to find a record but do not know the 
+     * root node of the BST.
+     * 
      * @param licenseNumber
      * @return 
      */
     public FundManager find(String licenseNumber) {
+        return find(this.bstRoot, licenseNumber);
+    }
+    
+    /**
+     * Find FundManager in the binary search tree by the license number using 
+     * recursion.
+     * @param licenseNumber
+     * @return 
+     */
+    public FundManager find(FundManagerNode currentRoot, String licenseNumber) {
         FundManager foundMgr = null;
         
-        int index = FundManager.generateHashFromLicenseNumber(licenseNumber);
-        
-        FundManager mgr = this.hashTable[index];
-        if (mgr != null ) {
-            if (mgr.getLicenseNumber().equals(licenseNumber)) {
-                // FundManager found at address indicated by hash
-                foundMgr = mgr;
-            } else {
-                // Collision occurred upon insert.  Use linear probing to find
-                // the matching fund manager if it exists in the collection.
-                boolean cont = true;
-                int i = 1;
-                int idx = 0;
-                while (i < this.hashTable.length && cont) {
-                    idx = index + i;
-                    
-                    // be careful of exceeding the bounds of the array, but 
-                    // ensure we can do wraparounds when we reach the end of 
-                    // the array 
-                    if (idx >= this.hashTable.length) {
-                        idx = idx - this.hashTable.length;
-                    }
-                    if (this.hashTable[idx] == null) {
-                        // if we hit a null address, then the licenseNumber is 
-                        // not in the hashTable.  Exit the loop & return null.
-                        cont = false;
-                    } else if (this.hashTable[idx].getLicenseNumber().equals(licenseNumber)){
-                        // if the address is not null and the license matches, 
-                        // we found the requested value. Exit the loop * return 
-                        // matching value.
-                        cont = false;
-                        foundMgr = this.hashTable[idx];
-                    } else {
-                        // no match - increment counter and continue iterating
-                        i++;
-                    }
-                }
+        if (currentRoot != null) {
+            int compareResult = licenseNumber
+                    .compareTo(currentRoot.getFundManager().getLicenseNumber());
+            
+            // found matching node
+            if (compareResult == 0) {
+                foundMgr = currentRoot.getFundManager();
             }
-        }
+            
+            // licenseNumber is less than the value on the currentRoot node. 
+            // Traverse left child.
+            if (compareResult < 0) {    
+                foundMgr = find(currentRoot.getLeftChild(), licenseNumber); 
+            } 
+            
+            // licenseNumber is greater than the value on the currentRoot node. 
+            // Traverse right child.
+            if (compareResult > 0) {
+                foundMgr = find(currentRoot.getRightChild(), licenseNumber);
+            }
+        }   
         
         return foundMgr;
     }

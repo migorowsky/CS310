@@ -1,0 +1,22 @@
+FundManager ABC11111, Andrea Smith
+     StockTrade CAB is TAXABLE
+     StockTrade CBA is TAXABLE
+     StockTrade GHIJ is NOT TAXABLE
+FundManager DEF22222, Sally Helm
+     StockTrade DEF is TAXABLE
+     StockTrade HIGJ is NOT TAXABLE
+FundManager GHI22222, Amelia Erhardt
+     StockTrade ABC is NOT TAXABLE
+     StockTrade FED is TAXABLE
+     StockTrade JKLM is NOT TAXABLE
+FundManager JKL33333, Zoey Chase
+     StockTrade MLJK is NOT TAXABLE
+     StockTrade EFD is TAXABLE
+     StockTrade NOP is NOT TAXABLE
+FundManager DEF33333, Bernadette Jones
+     StockTrade PIG is TAXABLE
+     StockTrade COG is NOT TAXABLE
+     StockTrade PONG is TAXABLE
+FundManager CCC56789, Tommy Twotone
+     StockTrade APES is NOT TAXABLE
+     StockTrade APP is NOT TAXABLE

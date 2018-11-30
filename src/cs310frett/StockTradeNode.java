@@ -57,6 +57,4 @@ public class StockTradeNode {
     public void setNextNode(StockTradeNode nextNode) {
         this.nextNode = nextNode;
     }
-    
-    
 }

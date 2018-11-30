@@ -309,7 +309,6 @@ public class StockTrade {
             hash += (int) symbolChars[i];   
         }
         
-        hash = hash % StockTradeLogImpl.STARTING_SIZE;
         return hash;
     }
 }
